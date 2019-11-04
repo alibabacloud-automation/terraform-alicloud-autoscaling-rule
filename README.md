@@ -99,6 +99,7 @@ This moudle can create Auto Scaling Rules, Alarm Task and Scheduled Task using a
       end_at           = "2019-12-05T07:15Z"
     }
     ```
+    
     **NOTE:** You can use [timestamp](https://www.terraform.io/docs/configuration/functions/timestamp.html) to produce a self-define timestamp, like `run_at = formatdate("YYYY-MM-DD'T'hh:mmZ", timeadd(timestamp(), "24h")` return this time of the next day.
 
 ## Inputs
