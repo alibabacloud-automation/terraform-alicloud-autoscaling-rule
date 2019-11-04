@@ -10,7 +10,7 @@ provider "alicloud" {
 
 // A simple scaling rule
 resource "alicloud_ess_scaling_rule" "simple" {
-  count             = var.create_simple_rule == true ? 1 : 0
+  count             = local.number_of_simple_rule
   scaling_group_id  = local.scaling_group_id
   scaling_rule_name = var.scaling_rule_name != "" ? var.scaling_rule_name : local.default_ess_simple_rule_name
   scaling_rule_type = "SimpleScalingRule"
@@ -21,7 +21,7 @@ resource "alicloud_ess_scaling_rule" "simple" {
 
 // A target tracking scaling rule
 resource "alicloud_ess_scaling_rule" "target-tracking" {
-  count                     = var.create_target_tracking_rule == true ? 1 : 0
+  count                     = local.number_of_target_tracking_rule
   scaling_group_id          = local.scaling_group_id
   scaling_rule_name         = var.scaling_rule_name != "" ? var.scaling_rule_name : local.default_ess_target_rule_name
   scaling_rule_type         = "TargetTrackingScalingRule"
@@ -33,7 +33,7 @@ resource "alicloud_ess_scaling_rule" "target-tracking" {
 
 // A step scaling rule
 resource "alicloud_ess_scaling_rule" "step" {
-  count                     = var.create_step_rule == true ? 1 : 0
+  count                     = local.number_of_step_rule
   scaling_group_id          = local.scaling_group_id
   scaling_rule_name         = var.scaling_rule_name != "" ? var.scaling_rule_name : local.default_ess_step_rule_name
   scaling_rule_type         = "StepScalingRule"
@@ -51,7 +51,7 @@ resource "alicloud_ess_scaling_rule" "step" {
 
 // A alarm task
 resource "alicloud_ess_alarm" "this" {
-  count               = var.create_alarm_task == true ? 1 : 0
+  count               = var.create_alarm_task == true ? local.number_of_alarm_task : 0
   scaling_group_id    = local.scaling_group_id
   name                = local.alarm_task_name
   description         = "An alarm task came from terraform-alicloud-modules/autoscaling-rule"
@@ -68,7 +68,7 @@ resource "alicloud_ess_alarm" "this" {
 
 // Several scheduled tasks
 resource "alicloud_ess_scheduled_task" "this" {
-  count                  = var.create_scheduled_task == false ? 0 : length(local.task_actions) > 0 ? length(local.task_actions) : 0
+  count                  = var.create_scheduled_task == true ? local.number_of_scheduled_task : 0
   scheduled_action       = local.task_actions[count.index]
   scheduled_task_name    = join("", [local.scheduled_task_name, count.index + 1])
   description            = join("", ["A scheduled task comes from terraform-alicloud-modules/autoscaling-rule and trigger the rule ", local.task_actions[count.index]])
@@ -78,4 +78,5 @@ resource "alicloud_ess_scheduled_task" "this" {
   recurrence_value       = lookup(local.scheduled_task_setting, "recurrence_value", null)
   recurrence_end_time    = lookup(local.scheduled_task_setting, "end_at", null)
   task_enabled           = var.enable_scheduled_task
+  depends_on             = [alicloud_ess_scaling_rule.simple, alicloud_ess_scaling_rule.target-tracking, alicloud_ess_scaling_rule.step]
 }
