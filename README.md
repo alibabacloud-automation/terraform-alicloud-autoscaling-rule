@@ -14,9 +14,9 @@ These types of resources are supported:
 ## Usage
 
 ```hcl
-// Create a scaling group at first.
+// Create a scaling group using autoscaling module at first.
 module "ess-group" {
-  source             = "terraform-alicloud-modules/autoscaling-rule/alicloud"
+  source             = "terraform-alicloud-modules/autoscaling/alicloud"
   profile            = "terraform"
   scaling_group_name = "tf-scalingGroup"
   min_size           = 0
