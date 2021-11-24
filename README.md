@@ -21,7 +21,7 @@ module "ess-group" {
   scaling_group_name = "tf-scalingGroup"
   min_size           = 0
   max_size           = 1
-  ...
+  //...
 }
 
 // Then add scaling rule and alarm task
