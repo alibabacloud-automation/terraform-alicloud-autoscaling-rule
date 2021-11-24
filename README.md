@@ -17,7 +17,6 @@ These types of resources are supported:
 // Create a scaling group using autoscaling module at first.
 module "ess-group" {
   source             = "terraform-alicloud-modules/autoscaling/alicloud"
-  profile            = "terraform"
   scaling_group_name = "tf-scalingGroup"
   min_size           = 0
   max_size           = 1
@@ -27,7 +26,6 @@ module "ess-group" {
 // Then add scaling rule and alarm task
 module "ess-rule" {
   source             = "terraform-alicloud-modules/autoscaling-rule/alicloud"
-  profile            = "terraform"
   scaling_group_id   = module.ess-group.this_autoscaling_group_id
   create_simple_rule = true
   create_alarm_task  = true
@@ -154,9 +152,82 @@ This moudle can create Auto Scaling Rules, Alarm Task and Scheduled Task using a
 | this_autoscaling_scheduled_task_name | The name of the autoscaling scheduled task |
 | this_autoscaling_scheduled_task_id | The id of the autoscaling scheduled task |
 
+## Notes
+From the version v1.1.0, the module has removed the following `provider` setting:
+
+```hcl
+provider "alicloud" {
+   version                 = ">=1.60.0"
+   profile                 = var.profile != "" ? var.profile : null
+   shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
+   region                  = var.region != "" ? var.region : null
+   skip_region_validation  = var.skip_region_validation
+   configuration_source    = "terraform-alicloud-modules/autoscaling-rule"
+}
+```
+
+If you still want to use the `provider` setting to apply this module, you can specify a supported version, like 1.0.3:
+
+```hcl
+module "ess-rule" {
+  source             = "terraform-alicloud-modules/autoscaling-rule/alicloud"
+  version            = "1.0.3"
+  region             = "cn-beijing"
+  profile            = "Your-Profile-Name"
+  create_simple_rule = true
+  create_alarm_task  = true
+  // ...
+}
+```
+
+If you want to upgrade the module to 1.1.0 or higher in-place, you can define a provider which same region with
+previous region:
+
+```hcl
+provider "alicloud" {
+  region  = "cn-beijing"
+  profile = "Your-Profile-Name"
+}
+module "ess-rule" {
+  source             = "terraform-alicloud-modules/autoscaling-rule/alicloud"
+  create_simple_rule = true
+  create_alarm_task  = true
+  // ...
+}
+```
+or specify an alias provider with a defined region to the module using `providers`:
+
+```hcl
+provider "alicloud" {
+   region  = "cn-beijing"
+   profile = "Your-Profile-Name"
+   alias   = "bj"
+}
+module "ess-rule" {
+  source             = "terraform-alicloud-modules/autoscaling-rule/alicloud"
+  providers          = {
+    alicloud = alicloud.bj
+  }
+  create_simple_rule = true
+  create_alarm_task  = true
+  // ...
+}
+```
+
+and then run `terraform init` and `terraform apply` to make the defined provider effect to the existing module state.
+
+More details see [How to use provider in the module](https://www.terraform.io/docs/language/modules/develop/providers.html#passing-providers-explicitly)
+
+## Terraform versions
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.0 |
+| <a name="requirement_alicloud"></a> [alicloud](#requirement\_alicloud) | >= 1.60.0 |
+
 Authors
 ----
-Created and maintained by He Guimin(@xiaozhu36, heguimin36@163.com)
+Created and maintained by Alibaba Cloud Terraform Team(terraform@alibabacloud.com)
 
 License
 ----
