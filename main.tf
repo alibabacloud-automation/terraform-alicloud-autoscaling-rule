@@ -2,9 +2,9 @@
 resource "alicloud_ess_scaling_rule" "simple" {
   count             = local.number_of_simple_rule
   scaling_group_id  = local.scaling_group_id
-  scaling_rule_name = var.scaling_rule_name != "" ? var.scaling_rule_name : local.default_ess_simple_rule_name
+  scaling_rule_name = var.scaling_simple_rule_name != "" ? var.scaling_simple_rule_name : var.scaling_rule_name != "" ? var.scaling_rule_name : local.default_ess_simple_rule_name
   scaling_rule_type = "SimpleScalingRule"
-  adjustment_type   = var.adjustment_type
+  adjustment_type   = var.simple_rule_adjustment_type != "" ? var.simple_rule_adjustment_type : var.adjustment_type
   adjustment_value  = var.adjustment_value
   cooldown          = local.simple_rule_cooldown
 }
@@ -13,10 +13,10 @@ resource "alicloud_ess_scaling_rule" "simple" {
 resource "alicloud_ess_scaling_rule" "target-tracking" {
   count                     = local.number_of_target_tracking_rule
   scaling_group_id          = local.scaling_group_id
-  scaling_rule_name         = var.scaling_rule_name != "" ? var.scaling_rule_name : local.default_ess_target_rule_name
+  scaling_rule_name         = var.scaling_target_tracking_rule_name != "" ? var.scaling_target_tracking_rule_name : var.scaling_rule_name != "" ? var.scaling_rule_name : local.default_ess_target_rule_name
   scaling_rule_type         = "TargetTrackingScalingRule"
-  estimated_instance_warmup = var.estimated_instance_warmup
-  metric_name               = var.metric_name
+  estimated_instance_warmup = var.target_tracking_rule_estimated_instance_warmup != "" ? var.target_tracking_rule_estimated_instance_warmup : var.estimated_instance_warmup
+  metric_name               = var.target_tracking_rule_metric_name != "" ? var.target_tracking_rule_metric_name : var.metric_name
   target_value              = var.target_value
   disable_scale_in          = var.disable_scale_in
 }
@@ -25,10 +25,10 @@ resource "alicloud_ess_scaling_rule" "target-tracking" {
 resource "alicloud_ess_scaling_rule" "step" {
   count                     = local.number_of_step_rule
   scaling_group_id          = local.scaling_group_id
-  scaling_rule_name         = var.scaling_rule_name != "" ? var.scaling_rule_name : local.default_ess_step_rule_name
+  scaling_rule_name         = var.scaling_step_rule_name != "" ? var.scaling_step_rule_name : var.scaling_rule_name != "" ? var.scaling_rule_name : local.default_ess_step_rule_name
   scaling_rule_type         = "StepScalingRule"
-  adjustment_type           = var.adjustment_type
-  estimated_instance_warmup = var.estimated_instance_warmup
+  adjustment_type           = var.step_rule_adjustment_type != "" ? var.step_rule_adjustment_type : var.adjustment_type
+  estimated_instance_warmup = var.step_rule_estimated_instance_warmup != "" ? var.step_rule_estimated_instance_warmup : var.estimated_instance_warmup
   dynamic "step_adjustment" {
     for_each = var.step_adjustments
     content {
@@ -41,12 +41,12 @@ resource "alicloud_ess_scaling_rule" "step" {
 
 // A alarm task
 resource "alicloud_ess_alarm" "this" {
-  count               = var.create_alarm_task == true ? local.number_of_alarm_task : 0
+  count               = var.create_alarm_task ? 1 : 0
   scaling_group_id    = local.scaling_group_id
   name                = local.alarm_task_name
-  description         = "An alarm task came from terraform-alicloud-modules/autoscaling-rule"
+  description         = var.alarm_description
   enable              = var.enable_alarm_task
-  alarm_actions       = local.task_actions
+  alarm_actions       = length(var.task_actions) > 0 ? var.task_actions : local.task_actions
   metric_type         = var.alarm_task_metric_type
   metric_name         = var.alarm_task_metric_name
   period              = lookup(local.alarm_task_setting, "period", null)
@@ -58,10 +58,10 @@ resource "alicloud_ess_alarm" "this" {
 
 // Several scheduled tasks
 resource "alicloud_ess_scheduled_task" "this" {
-  count                  = var.create_scheduled_task == true ? local.number_of_scheduled_task : 0
-  scheduled_action       = local.task_actions[count.index]
+  count                  = var.create_scheduled_task ? length(var.task_actions) : 0
+  scheduled_action       = length(var.task_actions) > 0 ? var.task_actions[count.index] : local.task_actions[count.index]
   scheduled_task_name    = join("", [local.scheduled_task_name, count.index + 1])
-  description            = join("", ["A scheduled task comes from terraform-alicloud-modules/autoscaling-rule and trigger the rule ", local.task_actions[count.index]])
+  description            = join("", [var.scheduled_task_description, local.task_actions[count.index]])
   launch_time            = lookup(local.scheduled_task_setting, "run_at", null)
   launch_expiration_time = lookup(local.scheduled_task_setting, "retry_interval", null)
   recurrence_type        = lookup(local.scheduled_task_setting, "recurrence_type", null)

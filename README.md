@@ -153,7 +153,6 @@ From the version v1.1.0, the module has removed the following `provider` setting
 
 ```hcl
 provider "alicloud" {
-   version                 = ">=1.60.0"
    profile                 = var.profile != "" ? var.profile : null
    shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
    region                  = var.region != "" ? var.region : null
@@ -218,7 +217,7 @@ More details see [How to use provider in the module](https://www.terraform.io/do
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.0 |
 | <a name="requirement_alicloud"></a> [alicloud](#requirement\_alicloud) | >= 1.60.0 |
 
 Authors
