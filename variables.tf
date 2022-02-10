@@ -20,14 +20,17 @@ variable "skip_region_validation" {
 
 variable "scaling_group_id" {
   description = "Specifying existing autoscaling group ID. If not set, it can be retrieved automatically by specifying filter `scaling_group_name_regex`."
+  type        = string
   default     = ""
 }
 variable "scaling_group_name_regex" {
   description = "Using a name regex to retrieve existing scaling group automactially."
+  type        = string
   default     = ""
 }
 variable "scaling_rule_name" {
   description = "The name for scaling rule. Default to a random string prefixed with `terraform-ess-<rule type>-`."
+  type        = string
   default     = ""
 }
 // Simple rule
@@ -38,14 +41,17 @@ variable "create_simple_rule" {
 }
 variable "adjustment_type" {
   description = "The method only used by the simple and step scaling rule to adjust the number of ECS instances. Valid values: QuantityChangeInCapacity, PercentChangeInCapacity and TotalCapacity."
+  type        = string
   default     = "TotalCapacity"
 }
 variable "adjustment_value" {
   description = "The number of ECS instances to be adjusted in the simple scaling rule. The number of ECS instances to be adjusted in a single scaling activity cannot exceed 500."
+  type        = number
   default     = 0
 }
 variable "cooldown" {
   description = "The cooldown time of the simple scaling rule. Valid values: 0 to 86400. Unit: seconds. If not set, the scaling group's cooldown will be used."
+  type        = string
   default     = ""
 }
 // target tracking rule
@@ -56,10 +62,12 @@ variable "create_target_tracking_rule" {
 }
 variable "metric_name" {
   description = "The predefined metric to monitor. This parameter is required and applicable only to target tracking scaling rules. See valid values: https://www.alibabacloud.com/help/doc-detail/25948.htm"
+  type        = string
   default     = "CpuUtilization"
 }
 variable "target_value" {
   description = "The target value of a metric. This parameter is required and applicable only to target tracking scaling rules. It must be greater than 0 and can have a maximum of three decimal places."
+  type        = string
   default     = "80.5"
 }
 variable "disable_scale_in" {
@@ -69,6 +77,7 @@ variable "disable_scale_in" {
 }
 variable "estimated_instance_warmup" {
   description = "The warm-up period of the ECS instances. It is applicable to target tracking and step scaling rules. The system adds ECS instances that are in the warm-up state to the scaling group, but does not report monitoring data during the warm-up period to CloudMonitor. Valid values: 0 to 86400. Unit: seconds."
+  type        = number
   default     = 300
 }
 
@@ -92,14 +101,17 @@ variable "create_alarm_task" {
 }
 variable "alarm_task_name" {
   description = "The name for alarm task. Default to a random string prefixed with `terraform-alarm-task-`."
+  type        = string
   default     = ""
 }
 variable "alarm_task_metric_type" {
   description = "The monitoring type for alarm task. Valid values system, custom. `system` means the metric data is collected by Aliyun Cloud Monitor Service(CMS); `custom` means the metric data is upload to CMS by users."
+  type        = string
   default     = "system"
 }
 variable "alarm_task_metric_name" {
   description = "The monitoring index name. Details see `[system monitoring index](https://help.aliyun.com/document_detail/141651.htm)` and `[custom monidoring index](https://www.alibabacloud.com/help/doc-detail/74861.htm)`."
+  type        = string
   default     = "CpuUtilization"
 }
 variable "alarm_task_setting" {
@@ -121,6 +133,7 @@ variable "create_scheduled_task" {
 }
 variable "scheduled_task_name" {
   description = "The name for scheduled task. Default to a random string prefixed with `terraform-scheduled-task-`."
+  type        = string
   default     = ""
 }
 variable "scheduled_task_setting" {
