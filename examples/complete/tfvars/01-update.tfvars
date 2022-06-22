@@ -40,11 +40,8 @@ alarm_task_setting = {
 // Several scheduled tasks
 scheduled_task_name        = "update-terraform-scheduled-task"
 scheduled_task_description = "update_scheduled_task_description"
-scheduled_task_setting = {
-  run_at           = "2022-05-22T07:15Z"
-  retry_interval   = 600
-  recurrence_type  = "Daily"
-  recurrence_value = "1"
-  end_at           = "2022-06-22T07:15Z"
-}
+
+retry_interval        = 600
+recurrence_type       = "Daily"
+recurrence_value      = "1"
 enable_scheduled_task = false

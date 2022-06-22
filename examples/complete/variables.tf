@@ -127,16 +127,22 @@ variable "scheduled_task_description" {
   default     = "scheduled_task_description"
 }
 
-variable "scheduled_task_setting" {
-  description = "The setting of running a scheduled task. It contains basic and recurrence setting. Deails see `run_at`(the time at which the scheduled task is triggered), `retry_interval`(the time period during which a failed scheduled task is retried, default to 600 seconds), `recurrence_type`(the recurrence type of the scheduled task: Daily, Weekly, Monthly or Cron, default to empty), `recurrence_value`(the recurrence frequency of the scheduled task, it must be set when `recurrence_type` is set) and `end_at`(the end time after which the scheduled task is no longer repeated. it will ignored if `recurrence_type` is not set)"
-  type        = map(string)
-  default = {
-    run_at           = "2022-05-20T07:15Z"
-    retry_interval   = 300
-    recurrence_type  = "Cron"
-    recurrence_value = "10 0 * * *"
-    end_at           = "2022-06-20T07:15Z"
-  }
+variable "retry_interval" {
+  description = "The setting of running a scheduled task. The time period during which a failed scheduled task is retried. Unit: seconds. Valid values: 0 to 21600. Default value: 600"
+  type        = number
+  default     = 300
+}
+
+variable "recurrence_type" {
+  description = "The setting of running a scheduled task. Specifies the recurrence type of the scheduled task"
+  type        = string
+  default     = "Cron"
+}
+
+variable "recurrence_value" {
+  description = "The setting of running a scheduled task. Specifies how often a scheduled task recurs."
+  type        = string
+  default     = "10 0 * * *"
 }
 
 variable "enable_scheduled_task" {
