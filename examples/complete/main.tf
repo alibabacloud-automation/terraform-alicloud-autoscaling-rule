@@ -155,7 +155,13 @@ module "scheduled_task" {
   task_actions               = [module.simple_rule.this_autoscaling_simple_rule_ari, module.target_tracking_rule.this_autoscaling_target_tracking_rule_ari, module.step_rule.this_autoscaling_step_rule_ari]
   scheduled_task_name        = var.scheduled_task_name
   scheduled_task_description = var.scheduled_task_description
-  scheduled_task_setting     = var.scheduled_task_setting
-  enable_scheduled_task      = var.enable_scheduled_task
+  scheduled_task_setting = {
+    run_at           = "${local.run_at}T07:15Z"
+    retry_interval   = var.retry_interval
+    recurrence_type  = var.recurrence_type
+    recurrence_value = var.recurrence_value
+    end_at           = "${local.end_at}T07:15Z"
+  }
+  enable_scheduled_task = var.enable_scheduled_task
 
 }
