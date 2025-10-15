@@ -1,9 +1,3 @@
-// Simple rule
-variable "scaling_simple_rule_name" {
-  description = "The name for scaling rule. Default to a random string prefixed with `terraform-ess-<rule type>-`."
-  type        = string
-  default     = "terraform-ess-simple-rule"
-}
 
 variable "simple_rule_adjustment_type" {
   description = "The method only used by the simple and step scaling rule to adjust the number of ECS instances. Valid values: QuantityChangeInCapacity, PercentChangeInCapacity and TotalCapacity."
@@ -23,7 +17,7 @@ variable "cooldown" {
   default     = 0
 }
 
-// target tracking rule
+# target tracking rule
 variable "scaling_target_tracking_rule_name" {
   description = "The name for scaling rule. Default to a random string prefixed with `terraform-ess-<rule type>-`."
   type        = string
@@ -54,7 +48,7 @@ variable "disable_scale_in" {
   default     = false
 }
 
-// step rule
+# step rule
 variable "scaling_step_rule_name" {
   description = "The name for scaling rule. Default to a random string prefixed with `terraform-ess-<rule type>-`."
   type        = string
@@ -77,7 +71,7 @@ variable "step_adjustments" {
   ]
 }
 
-// alarm task
+# alarm task
 variable "alarm_task_name" {
   description = "The name for alarm task. Default to a random string prefixed with `terraform-alarm-task-`."
   type        = string
@@ -114,7 +108,7 @@ variable "alarm_task_setting" {
   }
 }
 
-// scheduled task
+# scheduled task
 variable "scheduled_task_name" {
   description = "The name for scheduled task. Default to a random string prefixed with `terraform-scheduled-task-`."
   type        = string
