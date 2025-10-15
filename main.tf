@@ -1,4 +1,4 @@
-// A simple scaling rule
+# A simple scaling rule
 resource "alicloud_ess_scaling_rule" "simple" {
   count             = local.number_of_simple_rule
   scaling_group_id  = local.scaling_group_id
@@ -9,7 +9,7 @@ resource "alicloud_ess_scaling_rule" "simple" {
   cooldown          = local.simple_rule_cooldown
 }
 
-// A target tracking scaling rule
+# A target tracking scaling rule
 resource "alicloud_ess_scaling_rule" "target-tracking" {
   count                     = local.number_of_target_tracking_rule
   scaling_group_id          = local.scaling_group_id
@@ -21,7 +21,7 @@ resource "alicloud_ess_scaling_rule" "target-tracking" {
   disable_scale_in          = var.disable_scale_in
 }
 
-// A step scaling rule
+# A step scaling rule
 resource "alicloud_ess_scaling_rule" "step" {
   count                     = local.number_of_step_rule
   scaling_group_id          = local.scaling_group_id
@@ -39,7 +39,7 @@ resource "alicloud_ess_scaling_rule" "step" {
   }
 }
 
-// A alarm task
+# A alarm task
 resource "alicloud_ess_alarm" "this" {
   count               = var.create_alarm_task ? 1 : 0
   scaling_group_id    = local.scaling_group_id
@@ -56,7 +56,7 @@ resource "alicloud_ess_alarm" "this" {
   evaluation_count    = lookup(local.alarm_task_setting, "trigger_after", null)
 }
 
-// Several scheduled tasks
+# Several scheduled tasks
 resource "alicloud_ess_scheduled_task" "this" {
   count                  = var.create_scheduled_task ? length(var.task_actions) : 0
   scheduled_action       = length(var.task_actions) > 0 ? var.task_actions[count.index] : local.task_actions[count.index]
